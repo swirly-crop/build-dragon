@@ -1,4 +1,4 @@
-name: "📱 Android Build"
+name: "Android Build"
 
 on:
   push:
@@ -16,19 +16,28 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y unzip cmake build-essential wget
-      - name: Download Android commandline tools
+          sudo apt-get install -y unzip cmake build-essential wget openjdk-11-jdk-headless
+      - name: Download Android commandline tools and install SDK/NDK
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android-sdk
         run: |
+          set -eux
           mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
           cd $ANDROID_SDK_ROOT/cmdline-tools
+          # download command line tools and install into 'latest' for sdkmanager compatibility
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmd.zip
-          unzip -q cmd.zip -d cmdline-tools
+          unzip -q cmd.zip -d latest
           rm cmd.zip
-          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools/bin:$PATH
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-21" "ndk;21.4.7075529"
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
+          yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses || true
+          sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-21" "ndk;21.4.7075529"
       - name: Build with NDK (in-tree CMake)
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android-sdk
+          ANDROID_NDK_ROOT: ${{ runner.tool_cache }}/android-sdk/ndk/21.4.7075529
         run: |
+          set -eux
           mkdir -p android-auditor/cpp_auditor/android_cpp/build
           cd android-auditor/cpp_auditor/android_cpp/build
-          cmake -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-21 -DANDROID_NDK=$ANDROID_SDK_ROOT/ndk/21.4.7075529 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ANDROID_SDK_ROOT/ndk/21.4.7075529/build/cmake/android.toolchain.cmake ..
-          cmake --build . --config Release || true
+          cmake -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-21 -DANDROID_NDK=$ANDROID_NDK_ROOT -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake ..
+          cmake --build . --config Release
