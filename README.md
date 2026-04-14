@@ -1,5 +1,7 @@
 # Build-Dragon
 
+[![Android Build](https://github.com/swirly-crop/build-dragon/actions/workflows/android.yml/badge.svg)](https://github.com/swirly-crop/build-dragon/actions/workflows/android.yml) [![Assembly Run](https://github.com/swirly-crop/build-dragon/actions/workflows/assembly.yml/badge.svg)](https://github.com/swirly-crop/build-dragon/actions/workflows/assembly.yml) [![Swift Build](https://github.com/swirly-crop/build-dragon/actions/workflows/swift.yml/badge.svg)](https://github.com/swirly-crop/build-dragon/actions/workflows/swift.yml) [![C++ Build](https://github.com/swirly-crop/build-dragon/actions/workflows/cpp.yml/badge.svg)](https://github.com/swirly-crop/build-dragon/actions/workflows/cpp.yml)
+
 Collection of auditor, performance, and example native code used for device privacy audits and experimentation.
 
 IMPORTANT: This project intentionally does NOT contain or enable stealth/malicious software. It provides non-destructive auditing tools, examples, and educational assembly/C/C++/Swift snippets for device owners and defenders.
