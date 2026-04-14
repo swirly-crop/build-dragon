@@ -1,8 +1,9 @@
+.intel_syntax noprefix
 .text
 .global fast_memcpy_x86_64
 .type fast_memcpy_x86_64, @function
 fast_memcpy_x86_64:
-    // x86_64 SysV: rdi=dst, rsi=src, rdx=n
+    /* x86_64 SysV: rdi=dst, rsi=src, rdx=n */
     test rdx, rdx
     jz .ret
     mov rcx, rdx
@@ -10,8 +11,8 @@ fast_memcpy_x86_64:
 .loop_qword:
     cmp rcx, 0
     je .tail
-    mov rax, [rsi]
-    mov [rdi], rax
+    mov rax, QWORD PTR [rsi]
+    mov QWORD PTR [rdi], rax
     add rsi, 8
     add rdi, 8
     dec rcx
@@ -21,11 +22,12 @@ fast_memcpy_x86_64:
     cmp rdx, 0
     je .ret
 .loop_byte:
-    mov al, [rsi]
-    mov [rdi], al
+    mov al, BYTE PTR [rsi]
+    mov BYTE PTR [rdi], al
     inc rsi
     inc rdi
     dec rdx
     jnz .loop_byte
 .ret:
     ret
+.att_syntax prefix
