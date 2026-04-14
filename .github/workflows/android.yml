@@ -10,7 +10,7 @@ jobs:
   build-ndk:
     runs-on: ubuntu-latest
     env:
-      ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android-sdk
+      ANDROID_SDK_ROOT: ${{ github.workspace }}/.android-sdk
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
@@ -19,7 +19,7 @@ jobs:
           sudo apt-get install -y unzip cmake build-essential wget openjdk-11-jdk-headless
       - name: Download Android commandline tools and install SDK/NDK
         env:
-          ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android-sdk
+          ANDROID_SDK_ROOT: ${{ github.workspace }}/.android-sdk
         run: |
           set -eux
           mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
@@ -33,8 +33,8 @@ jobs:
           sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-21" "ndk;21.4.7075529"
       - name: Build with NDK (in-tree CMake)
         env:
-          ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android-sdk
-          ANDROID_NDK_ROOT: ${{ runner.tool_cache }}/android-sdk/ndk/21.4.7075529
+          ANDROID_SDK_ROOT: ${{ github.workspace }}/.android-sdk
+          ANDROID_NDK_ROOT: ${{ github.workspace }}/.android-sdk/ndk/21.4.7075529
         run: |
           set -eux
           mkdir -p android-auditor/cpp_auditor/android_cpp/build
