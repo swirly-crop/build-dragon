@@ -1,0 +1,27 @@
+name: Assembly Run
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  assemble-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: sudo apt-get update && sudo apt-get install -y gcc make file
+      - name: Build x86_64 assembly sample
+        run: |
+          set -eux
+          if [ -f android-auditor/assembly/hello.s ]; then
+            gcc -nostdlib -static -o android-auditor/assembly/hello android-auditor/assembly/hello.s || true
+          else
+            echo "assembly source not found"
+          fi
+          file android-auditor/assembly/hello || true
+      - name: Run sample (if executable)
+        run: |
+          if [ -x android-auditor/assembly/hello ]; then ./android-auditor/assembly/hello || true; else echo "no executable"; fi

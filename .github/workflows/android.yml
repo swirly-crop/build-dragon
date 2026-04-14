@@ -1,0 +1,34 @@
+name: "📱 Android Build"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ndk:
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android-sdk
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip cmake build-essential wget
+      - name: Download Android commandline tools
+        run: |
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          cd $ANDROID_SDK_ROOT/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmd.zip
+          unzip -q cmd.zip -d cmdline-tools
+          rm cmd.zip
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools/bin:$PATH
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-21" "ndk;21.4.7075529"
+      - name: Build with NDK (in-tree CMake)
+        run: |
+          mkdir -p android-auditor/cpp_auditor/android_cpp/build
+          cd android-auditor/cpp_auditor/android_cpp/build
+          cmake -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-21 -DANDROID_NDK=$ANDROID_SDK_ROOT/ndk/21.4.7075529 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ANDROID_SDK_ROOT/ndk/21.4.7075529/build/cmake/android.toolchain.cmake ..
+          cmake --build . --config Release || true

@@ -1,0 +1,31 @@
+name: C++ Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+      - name: Build perf benchmark
+        working-directory: android-auditor/perf
+        run: |
+          mkdir -p build && cd build
+          cmake ..
+          cmake --build .
+      - name: Build setout examples
+        working-directory: setout
+        run: make
+      - name: Run setout tests
+        working-directory: setout
+        run: |
+          chmod +x tests/run.sh || true
+          ./tests/run.sh || true

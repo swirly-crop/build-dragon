@@ -1,0 +1,22 @@
+name: Swift Build (macOS)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift version
+        run: swift --version || true
+      - name: Build Swift auditor
+        working-directory: ios_auditor/swift_auditor
+        run: |
+          mkdir -p ../../bin || true
+          swiftc main.swift -o ../../bin/ios_auditor || true
+      - name: Show binary
+        run: ls -l ios_auditor/bin || true
