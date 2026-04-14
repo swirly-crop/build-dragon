@@ -26,11 +26,16 @@ jobs:
           cd $ANDROID_SDK_ROOT/cmdline-tools
           # download command line tools and install into 'latest' for sdkmanager compatibility
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmd.zip
-          unzip -q cmd.zip -d latest
+          unzip -q cmd.zip -d tmp
           rm cmd.zip
-          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
-          yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses || true
-          sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-21" "ndk;21.4.7075529"
+          # move inner cmdline-tools directory to expected 'latest' folder
+          mv tmp/cmdline-tools latest
+          rm -rf tmp
+          SDKMANAGER=$ANDROID_SDK_ROOT/cmdline-tools/latest/cmdline-tools/bin/sdkmanager
+          chmod +x $SDKMANAGER || true
+          export PATH=$(dirname "$SDKMANAGER"):$PATH
+          yes | "$SDKMANAGER" --sdk_root=$ANDROID_SDK_ROOT --licenses || true
+          "$SDKMANAGER" --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-21" "ndk;21.4.7075529"
       - name: Build with NDK (in-tree CMake)
         env:
           ANDROID_SDK_ROOT: ${{ github.workspace }}/.android-sdk
