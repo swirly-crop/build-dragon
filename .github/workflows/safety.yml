@@ -1,0 +1,45 @@
+name: Safety Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  safety-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add safety icon to run summary
+        if: always()
+        run: |
+          set -euo pipefail
+          ICON_PNG=.github/safety/icon.png
+          ICON_PNG2=.github/safety/image.png
+          ICON_SVG=.github/safety/icon.svg
+          ICON=
+          MIME=
+          if [ -f "$ICON_PNG" ]; then
+            ICON="$ICON_PNG"
+            MIME="image/png"
+          elif [ -f "$ICON_PNG2" ]; then
+            ICON="$ICON_PNG2"
+            MIME="image/png"
+          elif [ -f "$ICON_SVG" ]; then
+            ICON="$ICON_SVG"
+            MIME="image/svg+xml"
+          fi
+          if [ -n "${ICON:-}" ] && [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+            echo "Adding safety icon to run summary"
+            echo "<p>" >> "$GITHUB_STEP_SUMMARY"
+            echo "<img src=\"data:$MIME;base64,\" alt=\"safety icon\" width=\"160\"/>" >> "$GITHUB_STEP_SUMMARY"
+            base64 -w 0 "$ICON" >> "$GITHUB_STEP_SUMMARY"
+            echo "</p>" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Install grep (if missing)
+        run: sudo apt-get update && sudo apt-get install -y grep || true
+      - name: Make safety script executable
+        run: chmod +x .github/safety/check_safety.sh
+      - name: Run safety scan
+        run: ./.github/safety/check_safety.sh
