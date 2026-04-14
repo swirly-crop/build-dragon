@@ -46,7 +46,7 @@ Quick start
   ```
 
 Contributing
-- This repo is intended for defensive research and education. If you contribute, keep changes non-destructive and document them.
+- This repo is intended for defensive research and education. If you contribute, keep changes non-destructive and document them. Make a good PR
 
 License
 - none yet
