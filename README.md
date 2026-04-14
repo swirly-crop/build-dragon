@@ -49,4 +49,4 @@ Contributing
 - This repo is intended for defensive research and education. If you contribute, keep changes non-destructive and document them.
 
 License
-- No license file included; add one if you intend to publish this repository publicly.
+- none yet
