@@ -15,12 +15,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential cmake
-      - name: Build perf benchmark
+      - name: Build perf benchmark (clean out-of-source)
         working-directory: android-auditor/perf
         run: |
-          mkdir -p build && cd build
-          cmake ..
-          cmake --build .
+          # ensure clean build directory to avoid stale CMakeCache references
+          rm -rf build
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
       - name: Build setout examples
         working-directory: setout
         run: make
