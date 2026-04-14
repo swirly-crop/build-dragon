@@ -31,3 +31,5 @@ fast_memcpy_x86_64:
 .ret:
     ret
 .att_syntax prefix
+/* mark stack non-executable */
+.section .note.GNU-stack,"",@progbits

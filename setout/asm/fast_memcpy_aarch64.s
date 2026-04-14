@@ -23,3 +23,6 @@ fast_memcpy_aarch64:
     b.ne 3b
 1:
     ret
+
+/* mark stack non-executable */
+.section .note.GNU-stack,"",@progbits
