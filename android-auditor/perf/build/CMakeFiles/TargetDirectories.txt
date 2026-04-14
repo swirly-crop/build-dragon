@@ -1,0 +1,3 @@
+/home/wwwte/build-dragon/android-auditor/perf/build/CMakeFiles/perf_benchmark.dir
+/home/wwwte/build-dragon/android-auditor/perf/build/CMakeFiles/edit_cache.dir
+/home/wwwte/build-dragon/android-auditor/perf/build/CMakeFiles/rebuild_cache.dir
