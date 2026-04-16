@@ -3,10 +3,10 @@
 This folder contains small helper bridge components to let Swift call local tools (`libimobiledevice`) via C/C++/Objective-C glue.
 
 Files:
-- `bridge.h` — C header exposing functions
-- `bridge.cpp` — C++ implementations that call `idevice_id` and `ideviceinfo` via `popen`
-- `objc_wrapper.m` — Objective-C wrapper (C-callable) that runs `ideviceinfo`
-- `assembly/hello_x86_64.s` — small assembly sample (educational)
+- `bridge.h` - C header exposing functions
+- `bridge.cpp` - C++ implementations that call `idevice_id` and `ideviceinfo` via `popen`
+- `objc_wrapper.m` - Objective-C wrapper (C-callable) that runs `ideviceinfo`
+- `assembly/hello_x86_64.s` - small assembly sample (educational)
 
 Build (macOS/Linux):
 
