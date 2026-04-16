@@ -48,4 +48,3 @@ neon_memcpy:
 
 /* mark stack non-executable */
 .section .note.GNU-stack,"",@progbits
-
