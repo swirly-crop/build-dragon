@@ -14,3 +14,6 @@ _start:
     mov $60, %rax       # sys_exit
     xor %rdi, %rdi
     syscall
+
+/* mark stack non-executable */
+.section .note.GNU-stack,"",@progbits

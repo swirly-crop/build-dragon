@@ -46,3 +46,6 @@ neon_memcpy:
 1:
     ret
 
+/* mark stack non-executable */
+.section .note.GNU-stack,"",@progbits
+
