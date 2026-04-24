@@ -42,6 +42,7 @@ Includes SIMD (AVX2) optimized sum_array for CPU performance boost.
 
 ### Kotlin Version
 Located in `kotlin_auditor/`. Requires Kotlin compiler. Build with `make` in that directory.
+Includes sequential and parallel sum implementations with realtime fallback for reliability.
 
 ### Assembly
 Located in `assembly/`. Includes hello world and sum_array functions for x86_64 and aarch64. Build with `make` in that directory.
