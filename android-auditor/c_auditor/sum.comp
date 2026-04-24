@@ -1,0 +1,41 @@
+#version 450
+
+layout(local_size_x = 256) in;
+
+layout(binding = 0) buffer InputBuffer {
+    uint data[];
+} inputBuffer;
+
+layout(binding = 1) buffer OutputBuffer {
+    uint partialSums[];
+} outputBuffer;
+
+void main() {
+    uint globalId = gl_GlobalInvocationID.x;
+    uint localId = gl_LocalInvocationID.x;
+    uint groupId = gl_WorkGroupID.x;
+
+    // Shared memory for reduction
+    shared uint sharedData[256];
+
+    // Load data into shared memory
+    if (globalId < inputBuffer.data.length()) {
+        sharedData[localId] = inputBuffer.data[globalId];
+    } else {
+        sharedData[localId] = 0;
+    }
+    barrier();
+
+    // Parallel reduction
+    for (uint stride = 128; stride > 0; stride >>= 1) {
+        if (localId < stride) {
+            sharedData[localId] += sharedData[localId + stride];
+        }
+        barrier();
+    }
+
+    // Write partial sum
+    if (localId == 0) {
+        outputBuffer.partialSums[groupId] = sharedData[0];
+    }
+}
